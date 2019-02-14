@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.but4reuse.benchmarks.argoumlspl.objectContribution"
+            nameFilter="scenarios"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.but4reuse.benchmarks.argoumlspl.actions.CreateScenariosAction"
+               id="org.but4reuse.benchmarks.argoumlspl.action"
+               label="Create BUT4Reuse scenarios"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.but4reuse.visualisation">
+      <visualisation
+            class="org.but4reuse.benchmarks.argoumlspl.fl.results.visualisation.ArgoUMLSPLFeatureLocationResultsVisualisation"
+            name="ArgoUML SPL Feature Location results creation">
+      </visualisation>
+   </extension>
+
+</plugin>

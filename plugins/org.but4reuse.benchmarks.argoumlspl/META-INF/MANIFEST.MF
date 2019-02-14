@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ArgoUML SPL
+Bundle-SymbolicName: org.but4reuse.benchmarks.argoumlspl;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.but4reuse.benchmarks.argoumlspl.activator.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.but4reuse.utils,
+ org.eclipse.core.resources,
+ org.but4reuse.artefactmodel,
+ org.but4reuse.featurelist,
+ org.eclipse.jdt.core,
+ org.but4reuse.visualisation,
+ org.but4reuse.adaptedmodel,
+ org.but4reuse.adapters,
+ org.but4reuse.adapters.javajdt,
+ org.but4reuse.feature.location
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
