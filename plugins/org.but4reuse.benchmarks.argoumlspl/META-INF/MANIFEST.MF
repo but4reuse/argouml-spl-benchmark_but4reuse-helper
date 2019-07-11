@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ArgoUML SPL
+Bundle-Name: ArgoUML SPL benchmark BUT4Reuse helper
 Bundle-SymbolicName: org.but4reuse.benchmarks.argoumlspl;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.but4reuse.benchmarks.argoumlspl.activator.Activator

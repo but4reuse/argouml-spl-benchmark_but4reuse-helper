@@ -81,6 +81,7 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 			File artefactModelFile = WorkbenchUtils.getFileFromIResource(res);
 
 			// Get your results package
+			// TODO find a better way
 			boolean isArgoUMLSPLBenchmark = artefactModelFile.getParentFile().getParentFile().getName()
 					.contains("cenario");
 			File yourResults = generateFolderFromArtefactModel(artefactModelFile, isArgoUMLSPLBenchmark);
@@ -96,7 +97,6 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	/**
 	 * Create the folder where it will be saved the answer.
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param artefactModelFile
 	 * @param argoUMLSPLBenchmark - if true, then it will be save into the structure
 	 *                            of argoUMLSPL Benchmark. Otherwise saved in the
@@ -114,7 +114,7 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 				// Create the folder inside the parent director of the artefact model
 				answer = new File(artefactModelFile.getParent(), "benchmarkResults");
 
-			// If not existe then create
+			// If not exists then create
 			if (!answer.exists())
 				answer.mkdir();
 			else {
@@ -133,7 +133,6 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	 * For each feature in the feature List get the elements and create the
 	 * necessary files to visualize the files in the argoUMLSPL Benchmark structure
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param yourResults - Folder where will be created the txt files per feature
 	 */
 	private void generateFLResultsWithGroundTruthFormat(File yourResults) {
@@ -220,9 +219,8 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	 * Return a StringBuilder without the methods that are inside an entire class
 	 * tag
 	 * 
-	 * @param feature - Lines founded inside each feature
+	 * @param feature - Lines found inside each feature
 	 * @return StringBuilder
-	 * @author Nicolas Ordoñez Chala
 	 */
 	private StringBuilder checkClassWithoutRefinement(Set<String> feature) {
 		StringBuilder content = new StringBuilder();
@@ -289,7 +287,6 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	/**
 	 * Create a set with the lines of interest for the Benchmark
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param List of elements per feature
 	 * @return
 	 */
@@ -397,7 +394,6 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	 * Analyze the content to determine if it has to be added or not to the plain
 	 * text.
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param answer  - representation of the plain text as a Set
 	 * @param content - Content that has to be added to the plain text
 	 */
@@ -427,7 +423,6 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	 * Analyze the content to determine if it has to be added or not to the plain
 	 * text.
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param answer  - representation of the plain text as a Set
 	 * @param content - Content that has to be added to the plain text
 	 */
@@ -450,7 +445,6 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 	/**
 	 * Count the number of lines -\n- in String
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param str
 	 * @return
 	 */

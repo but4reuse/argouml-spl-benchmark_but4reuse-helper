@@ -12,7 +12,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
- * Enable the button to create but4Resources to the studycase ArgoUML SPL
+ * Enable the button to create but4Resources to the ArgoUML SPL
  * Benchmark
  * 
  * @author Nicolas Ordoñez Chala, Jabier Martinez

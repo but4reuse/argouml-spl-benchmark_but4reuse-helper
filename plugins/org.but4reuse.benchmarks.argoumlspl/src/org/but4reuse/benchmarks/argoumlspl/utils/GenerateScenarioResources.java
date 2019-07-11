@@ -40,7 +40,6 @@ public class GenerateScenarioResources {
 	 * feature obtain a Map to optimize the addition of implementedElements into
 	 * the Feature Object
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param project
 	 *            - Path of the project
 	 * @return HashMap where Key is the name of the feature, and its content is
@@ -83,7 +82,6 @@ public class GenerateScenarioResources {
 	 * Search and retrieve one file with an specific name and also it can
 	 * specific the type of file.
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param parentFile
 	 *            - Location of the file
 	 * @param nameOfFile
@@ -136,7 +134,6 @@ public class GenerateScenarioResources {
 	/**
 	 * Clean the implemented artefacts found in previous scenarios
 	 * 
-	 * @author Nicolas Ordonez Chala
 	 * @param featureMap
 	 */
 	private void cleanFeatureMap(Map<String, Feature> featureMap) {
@@ -151,7 +148,6 @@ public class GenerateScenarioResources {
 	/**
 	 * Based on the scenario folder of argoUML SPL
 	 * 
-	 * @author Nicolas Ordoñez Chala
 	 * @param scenarioFolder
 	 */
 	public void generateArtefactModelAndFeatureList(File scenarioFolder) {
