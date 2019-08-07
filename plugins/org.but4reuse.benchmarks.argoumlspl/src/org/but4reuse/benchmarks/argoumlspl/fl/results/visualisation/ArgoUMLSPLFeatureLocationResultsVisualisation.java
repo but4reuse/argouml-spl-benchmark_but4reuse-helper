@@ -345,14 +345,14 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 					MethodElement me = ((MethodElement) ((MethodBodyElement) e).getDependencies().get("methodBody")
 							.get(0));
 
-					// String content = me.id;
 					String content = TraceIdUtils.getId((MethodDeclaration)((MethodElement) me).node);
-
-					// Evaluate the size of the actual method body
-					int actualNumberOfLines = countLines(((MethodBodyElement) e).body);
-					if (actualNumberOfLines != originalMethodBody.get(content))
-						ifContentIsNotInsertRefinementTag(answer, content);
-
+					if(content!=null && !content.isEmpty()) {
+						// Evaluate the size of the actual method body
+						int actualNumberOfLines = countLines(((MethodBodyElement) e).body);
+						if (actualNumberOfLines != originalMethodBody.get(content)) {
+							ifContentIsNotInsertRefinementTag(answer, content);
+						}
+					}
 				}
 
 				// if the element is import element

@@ -36,14 +36,14 @@ public class GenerateScenarioResources {
 	private FeatureList featureList;
 
 	/**
-	 * From a folder which contains the file with the descriptions of each
-	 * feature obtain a Map to optimize the addition of implementedElements into
-	 * the Feature Object
+	 * From a folder which contains the file with the descriptions of each feature
+	 * obtain a Map to optimize the addition of implementedElements into the Feature
+	 * Object
 	 * 
 	 * @param project
 	 *            - Path of the project
-	 * @return HashMap where Key is the name of the feature, and its content is
-	 *         the Feature object
+	 * @return HashMap where Key is the name of the feature, and its content is the
+	 *         Feature object
 	 */
 	private Map<String, Feature> featuresDescriptionFileToMap(File project) {
 		Map<String, Feature> featureMap = new HashMap<String, Feature>();
@@ -82,8 +82,8 @@ public class GenerateScenarioResources {
 	}
 
 	/**
-	 * Search and retrieve one file with an specific name and also it can
-	 * specific the type of file.
+	 * Search and retrieve one file with an specific name and also it can specific
+	 * the type of file.
 	 * 
 	 * @param parentFile
 	 *            - Location of the file
@@ -185,7 +185,7 @@ public class GenerateScenarioResources {
 					// Set the name to the name of the scenario
 					featureList.setName(scenarioDirectory.getName());
 					artefactModel.setName(scenarioDirectory.getName());
-					
+
 					// Set the default adapter
 					artefactModel.setAdapters("jdt");
 
@@ -214,7 +214,8 @@ public class GenerateScenarioResources {
 						Artefact variantArtefact = amf.createArtefact();
 						variantArtefact.setName(variant.getName());
 
-						variantArtefact.setArtefactURI(scenarioPlatformPath + "/variants/" + variant.getName());
+						variantArtefact.setArtefactURI(
+								scenarioPlatformPath + "/variants/" + variant.getName() + "/src/org/argouml");
 
 						// Modify featureList updating the feature with the
 						// implemented element
