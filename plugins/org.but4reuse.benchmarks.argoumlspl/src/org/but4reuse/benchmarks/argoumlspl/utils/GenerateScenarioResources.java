@@ -66,8 +66,11 @@ public class GenerateScenarioResources {
 
 				// Create the feature with a name and a description
 				Feature f = flf.createFeature();
-				f.setName(lines[0]);
+				// Id is the feature with all uppercase
 				f.setId(lines[0]);
+				// Name and name synonym
+				f.setName(lines[1]);
+				// Description
 				f.setDescription(lines[2]);
 				featureMap.put(lines[0], f);
 			}

@@ -267,15 +267,19 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 
 					
 					String content = TraceIdUtils.getId((MethodDeclaration)me.node);
-					Integer actualNumberOfLines = countLines(((MethodBodyElement) e).body);
+					if(content!=null && !content.isEmpty()) {
+						Integer actualNumberOfLines = countLines(((MethodBodyElement) e).body);
 
-					// Get the size of the original method body
-					if (!originalMethodBody.containsKey(content))
-						originalMethodBody.put(content, actualNumberOfLines);
+						// Get the size of the original method body
+						if (!originalMethodBody.containsKey(content)) {
+							originalMethodBody.put(content, actualNumberOfLines);
+						}
 
-					// Evaluate the size of the actual method body
-					if (actualNumberOfLines < originalMethodBody.get(content))
-						originalMethodBody.put(content, actualNumberOfLines);
+						// Evaluate the size of the actual method body
+						if (actualNumberOfLines < originalMethodBody.get(content)) {
+							originalMethodBody.put(content, actualNumberOfLines);
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -407,8 +411,8 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 				answer.add(content);
 			}
 			// if in other hand, it had not content + refinement, check if
-			// the content is already added
-			else if (!answer.contains(content)) {
+			// the content is already added. Also check if content is empty
+			else if (content!=null && !content.isEmpty() && !answer.contains(content)) {
 				// if is not in the plain text, then add
 				answer.add(content);
 			}
