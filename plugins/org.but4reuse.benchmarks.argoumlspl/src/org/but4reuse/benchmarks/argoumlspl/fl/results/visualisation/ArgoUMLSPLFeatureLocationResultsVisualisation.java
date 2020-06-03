@@ -55,6 +55,7 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 
 	// Ground-truth format
 	private static final String AND_FEATURE_NAMES = "_and_";
+	private static final String NOT_FEATURE_NAMES = "not_";
 
 	// Ground-truth format
 	private static final String LINESPACE = "\n";
@@ -174,9 +175,9 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 				Set<String> orderedNames = new TreeSet<>();
 				// Get all the features that have interacted in the feature object
 				for (Feature interactedFeature : feature.getInteractionFeatureOf()) {
-					if (!FeatureListHelper.isCoreFeature(am, feature)) {
+					//if (!FeatureListHelper.isCoreFeature(am, feature)) {
 						orderedNames.add(interactedFeature.getId());
-					}
+					//}
 				}
 
 				// Add the features found to a String with its names
@@ -185,6 +186,9 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 				}
 				// remove last "and"
 				fileName = fileName.substring(0, fileName.length() - AND_FEATURE_NAMES.length());
+			// Check if it is a negation feature
+			} else if (feature.getNegationFeatureOf() != null) {
+				fileName = NOT_FEATURE_NAMES + feature.getNegationFeatureOf().getId();
 			} else {
 				fileName = feature.getId();
 			}
@@ -206,6 +210,7 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 
 				// Create the txt file object for each feature
 				File file = new File(yourResults, f + ".txt");
+				FileUtils.createFile(file);
 				FileUtils.writeFile(file, content.toString());
 
 			}
