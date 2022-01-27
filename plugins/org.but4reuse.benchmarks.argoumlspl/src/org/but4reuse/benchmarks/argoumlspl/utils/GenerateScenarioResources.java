@@ -137,18 +137,24 @@ public class GenerateScenarioResources {
 	 * Create artefact model and feature list of a given scenario
 	 * 
 	 * @param scenarioFolder
+	 * @param usePlatformURI use false to use absolute path in the artefact URI
 	 * @return index 0 is for the artefact model, and 1 for the feature list
 	 */
-	public static Object[] createArtefactModelAndFeatureList(File scenarioFolder) {
+	public static Object[] createArtefactModelAndFeatureList(File scenarioFolder, boolean usePlatformURI) {
 
 		// Get the file of the project
 		File benchmarkFolder = scenarioFolder.getParentFile().getParentFile();
 
-		// Get path of the project
-		String argoUMLSPLPlatformPath = "platform:/resource/" + benchmarkFolder.getName() + "/scenarios/";
-
 		// Create map to optimize the insertion of the implemented elements
 		Map<String, Feature> featureMap = featuresDescriptionFileToMap(benchmarkFolder);
+
+		// Get path of the project
+		String argoUMLSPLPlatformPath = null;
+		if (usePlatformURI) {
+			argoUMLSPLPlatformPath = "platform:/resource/" + benchmarkFolder.getName() + "/scenarios/";
+		} else {
+			argoUMLSPLPlatformPath = "file:/" + scenarioFolder.getParentFile().getAbsolutePath() + File.separatorChar;
+		}
 
 		// Create String with the path of the scenario
 		String scenarioPlatformPath = argoUMLSPLPlatformPath + scenarioFolder.getName();
@@ -233,7 +239,7 @@ public class GenerateScenarioResources {
 					// Create String with the path of the scenario
 					String scenarioAbsolutePath = argoUMLSPLAbsolutePath + "\\" + scenarioDirectory.getName();
 
-					Object[] objects = createArtefactModelAndFeatureList(scenarioDirectory);
+					Object[] objects = createArtefactModelAndFeatureList(scenarioDirectory, true);
 					ArtefactModel artefactModel = (ArtefactModel) objects[0];
 					FeatureList featureList = (FeatureList) objects[1];
 
