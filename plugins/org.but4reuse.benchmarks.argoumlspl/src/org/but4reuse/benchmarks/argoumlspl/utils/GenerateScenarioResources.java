@@ -20,32 +20,21 @@ import org.but4reuse.utils.files.FileUtils;
  * 
  * Generate the resources for the ArgoUML SPL Benchmark
  * 
- * @author Nicolas Ordoñez Chala
+ * @author Nicolas OrdoÃ±ez Chala
  *
  */
 public class GenerateScenarioResources {
-
-	// Artefact Model Factory to generate Artefact Objects
-	private ArtefactModelFactory amf = ArtefactModelFactory.eINSTANCE;
-	// Create the artefact model
-	private ArtefactModel artefactModel;
-
-	// Feature List Factory to generate Feature Objects
-	private FeatureListFactory flf = FeatureListFactory.eINSTANCE;
-	// Create feature List
-	private FeatureList featureList;
 
 	/**
 	 * From a folder which contains the file with the descriptions of each feature
 	 * obtain a Map to optimize the addition of implementedElements into the Feature
 	 * Object
 	 * 
-	 * @param project
-	 *            - Path of the project
+	 * @param project - Path of the project
 	 * @return HashMap where Key is the name of the feature, and its content is the
 	 *         Feature object
 	 */
-	private Map<String, Feature> featuresDescriptionFileToMap(File project) {
+	private static Map<String, Feature> featuresDescriptionFileToMap(File project) {
 		Map<String, Feature> featureMap = new HashMap<String, Feature>();
 		try {
 			// Get the file where is the description of the features of ArgoUML
@@ -65,7 +54,7 @@ public class GenerateScenarioResources {
 				String[] lines = line.split(";");
 
 				// Create the feature with a name and a description
-				Feature f = flf.createFeature();
+				Feature f = FeatureListFactory.eINSTANCE.createFeature();
 				// Id is the feature with all uppercase
 				f.setId(lines[0]);
 				// Name and name synonym
@@ -78,22 +67,18 @@ public class GenerateScenarioResources {
 			e.printStackTrace();
 		}
 		return featureMap;
-
 	}
 
 	/**
 	 * Search and retrieve one file with an specific name and also it can specific
 	 * the type of file.
 	 * 
-	 * @param parentFile
-	 *            - Location of the file
-	 * @param nameOfFile
-	 *            - name of the file of interest
-	 * @param typeOfFile
-	 *            - 0 Folder, 1 File, other does not matter
+	 * @param parentFile - Location of the file
+	 * @param nameOfFile - name of the file of interest
+	 * @param typeOfFile - 0 Folder, 1 File, other does not matter
 	 * @return
 	 */
-	private File getFileofFileByName(File parentFile, String nameOfFile, int typeOfFile) {
+	private static File getFileofFileByName(File parentFile, String nameOfFile, int typeOfFile) {
 
 		File fileOfInterest = null;
 		try {
@@ -139,7 +124,7 @@ public class GenerateScenarioResources {
 	 * 
 	 * @param featureMap
 	 */
-	private void cleanFeatureMap(Map<String, Feature> featureMap) {
+	private static void cleanFeatureMap(Map<String, Feature> featureMap) {
 		try {
 			for (String featureName : featureMap.keySet())
 				featureMap.get(featureName).getImplementedInArtefacts().clear();
@@ -149,22 +134,95 @@ public class GenerateScenarioResources {
 	}
 
 	/**
-	 * Based on the scenario folder of argoUML SPL
+	 * Create artefact model and feature list of a given scenario
 	 * 
 	 * @param scenarioFolder
+	 * @return index 0 is for the artefact model, and 1 for the feature list
 	 */
-	public void generateArtefactModelAndFeatureList(File scenarioFolder) {
+	public static Object[] createArtefactModelAndFeatureList(File scenarioFolder) {
 
 		// Get the file of the project
-		File benchmarkFolder = scenarioFolder.getParentFile();
-		// Create map to optimize the insertion of the implemented elements
-		Map<String, Feature> featureMap = featuresDescriptionFileToMap(benchmarkFolder);
+		File benchmarkFolder = scenarioFolder.getParentFile().getParentFile();
+
 		// Get path of the project
 		String argoUMLSPLPlatformPath = "platform:/resource/" + benchmarkFolder.getName() + "/scenarios/";
+
+		// Create map to optimize the insertion of the implemented elements
+		Map<String, Feature> featureMap = featuresDescriptionFileToMap(benchmarkFolder);
+
+		// Create String with the path of the scenario
+		String scenarioPlatformPath = argoUMLSPLPlatformPath + scenarioFolder.getName();
+
+		// Init the featureList and the artefact model for each
+		// scenario
+		FeatureList featureList = FeatureListFactory.eINSTANCE.createFeatureList();
+		ArtefactModel artefactModel = ArtefactModelFactory.eINSTANCE.createArtefactModel();
+		cleanFeatureMap(featureMap);
+
+		// Set the name to the name of the scenario
+		featureList.setName(scenarioFolder.getName());
+		artefactModel.setName(scenarioFolder.getName());
+
+		// Set the default adapter
+		artefactModel.setAdapters("jdt");
+
+		// Search into each scenario for the configs
+		// We are just interested in the folder which is called
+		// configs
+		File configsFolder = getFileofFileByName(scenarioFolder, "configs", 0);
+
+		// Get all config files and variant folders
+		File[] configFile = configsFolder.listFiles();
+
+		for (int i = 0; i < configFile.length; i++) {
+			// Get the variant name
+			File variant = configFile[i];
+
+			// Create Artefact
+			Artefact variantArtefact = ArtefactModelFactory.eINSTANCE.createArtefact();
+			variantArtefact.setName(variant.getName());
+
+			variantArtefact
+					.setArtefactURI(scenarioPlatformPath + "/variants/" + variant.getName() + "/src/org/argouml");
+
+			// Modify featureList updating the feature with the
+			// implemented element
+			// represented into the artefact
+			List<String> lines = FileUtils.getLinesOfFile(variant);
+			if (lines.size() > 0)
+				for (int n = 0; n < lines.size(); n++)
+					featureMap.get(lines.get(n)).getImplementedInArtefacts().add(variantArtefact);
+
+			// Add each artefact to the artefact model
+			artefactModel.getOwnedArtefacts().add(variantArtefact);
+		}
+
+		// Add each feature to the feature List
+		for (Feature f : featureMap.values()) {
+			if (!f.getImplementedInArtefacts().isEmpty())
+				featureList.getOwnedFeatures().add(f);
+		}
+
+		// Add the artefactmodel to the featureList
+		featureList.setArtefactModel(artefactModel);
+
+		Object[] objects = new Object[2];
+		objects[0] = artefactModel;
+		objects[1] = featureList;
+		return objects;
+	}
+
+	/**
+	 * Based on the scenarios folder of argoUML SPL
+	 * 
+	 * @param scenariosFolder
+	 */
+	public void generateArtefactModelAndFeatureList(File scenariosFolder) {
+
 		// Get path of the project
-		String argoUMLSPLAbsolutePath = scenarioFolder.getAbsolutePath();
+		String argoUMLSPLAbsolutePath = scenariosFolder.getAbsolutePath();
 		// Get all the files inside the scenario Folder
-		File[] scenarioFile = scenarioFolder.listFiles();
+		File[] scenarioFile = scenariosFolder.listFiles();
 
 		// Check if the array of Files is not null
 		if (scenarioFile != null) {
@@ -174,20 +232,10 @@ public class GenerateScenarioResources {
 
 					// Create String with the path of the scenario
 					String scenarioAbsolutePath = argoUMLSPLAbsolutePath + "\\" + scenarioDirectory.getName();
-					String scenarioPlatformPath = argoUMLSPLPlatformPath + scenarioDirectory.getName();
 
-					// Init the featureList and the artefact model for each
-					// scenario
-					featureList = flf.createFeatureList();
-					artefactModel = amf.createArtefactModel();
-					cleanFeatureMap(featureMap);
-
-					// Set the name to the name of the scenario
-					featureList.setName(scenarioDirectory.getName());
-					artefactModel.setName(scenarioDirectory.getName());
-
-					// Set the default adapter
-					artefactModel.setAdapters("jdt");
+					Object[] objects = createArtefactModelAndFeatureList(scenarioDirectory);
+					ArtefactModel artefactModel = (ArtefactModel) objects[0];
+					FeatureList featureList = (FeatureList) objects[1];
 
 					// // Create the file object for the featureList and
 					// artefactModel from absolute
@@ -197,46 +245,6 @@ public class GenerateScenarioResources {
 					// Create the file
 					FileUtils.deleteFile(but4ReuseDirectoryResourceAbsolute);
 					but4ReuseDirectoryResourceAbsolute.mkdir();
-
-					// Search into each scenario for the configs
-					// We are just interested in the folder which is called
-					// configs
-					File configsFolder = getFileofFileByName(scenarioDirectory, "configs", 0);
-
-					// Get all config files and variant folders
-					File[] configFile = configsFolder.listFiles();
-
-					for (int i = 0; i < configFile.length; i++) {
-						// Get the variant name
-						File variant = configFile[i];
-
-						// Create Artefact
-						Artefact variantArtefact = amf.createArtefact();
-						variantArtefact.setName(variant.getName());
-
-						variantArtefact.setArtefactURI(
-								scenarioPlatformPath + "/variants/" + variant.getName() + "/src/org/argouml");
-
-						// Modify featureList updating the feature with the
-						// implemented element
-						// represented into the artefact
-						List<String> lines = FileUtils.getLinesOfFile(variant);
-						if (lines.size() > 0)
-							for (int n = 0; n < lines.size(); n++)
-								featureMap.get(lines.get(n)).getImplementedInArtefacts().add(variantArtefact);
-
-						// Add each artefact to the artefact model
-						artefactModel.getOwnedArtefacts().add(variantArtefact);
-					}
-
-					// Add each feature to the feature List
-					for (Feature f : featureMap.values()) {
-						if (!f.getImplementedInArtefacts().isEmpty())
-							featureList.getOwnedFeatures().add(f);
-					}
-
-					// Add the artefactmodel to the featureList
-					featureList.setArtefactModel(artefactModel);
 
 					URI afmURI = new File(but4ReuseDirectoryResourceAbsolute,
 							scenarioDirectory.getName() + ".artefactmodel").toURI();
@@ -249,11 +257,8 @@ public class GenerateScenarioResources {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
 				}
-
 			}
 		}
-
 	}
 }
