@@ -25,15 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisation {
 
-	// Ground-truth format
-	public static final String REFINEMENT = " Refinement";
-
-	// Regular expression to determine if one line is method
-	public static final String METHOD_REGEX = "(";
-
-	// Ground-truth format
-	private static final String LINESPACE = "\n";
-
 	FeatureList featureList;
 	AdaptedModel adaptedModel;
 
@@ -118,65 +109,7 @@ public class ArgoUMLSPLFeatureLocationResultsVisualisation implements IVisualisa
 		// per feature
 		Map<String, Set<String>> benchmarkResults = TransformFLResultsToBenchFormat.transform(featureList, adaptedModel, locatedFeatures);
 
-		serializeResults(yourResults, benchmarkResults);
-	}
-
-	
-	private void serializeResults(File resultsFolder, Map<String, Set<String>> benchmarkResults) {
-		try {
-			for (String f : benchmarkResults.keySet()) {
-
-				// Check if there are class declaration then
-				// it has to delete every method declared
-				// TODO This is part of TransformFLResultsToBenchFormat
-				StringBuilder content = checkClassWithoutRefinement(benchmarkResults.get(f));
-
-				// Do not create a txt file if content is empty
-				if (content.length() == 0) {
-					continue;
-				}
-
-				// Create the txt file object for each feature
-				File file = new File(resultsFolder, f + ".txt");
-				FileUtils.createFile(file);
-				FileUtils.writeFile(file, content.toString());
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Return a StringBuilder without the methods that are inside an entire class
-	 * tag
-	 * 
-	 * @param feature - Lines found inside each feature
-	 * @return StringBuilder
-	 */
-	private StringBuilder checkClassWithoutRefinement(Set<String> feature) {
-		StringBuilder content = new StringBuilder();
-			if (feature.size() != 0) {
-				String lastClassWithoutRefinementTag = "//";
-				for (String line : feature) {
-					// Review the last class found without refinement because
-					// it is a tree set and it stores
-					// lines in alphabetical order then if it finds new 
-					// class without refinement it wont find methods with
-					// previous class founded
-					if (!line.contains(lastClassWithoutRefinementTag)) {
-						// If the line is not a method and also is not refinement
-						if (!line.contains(METHOD_REGEX) && !line.contains(REFINEMENT)) {
-							// it means that is a class without refinement
-							lastClassWithoutRefinementTag = line;
-						}
-						content.append(line + LINESPACE);
-					}
-				}
-				// Delete the last linespace added
-				content.setLength(content.length() - LINESPACE.length());
-			}
-		return content;
+		TransformFLResultsToBenchFormat.serializeResults(yourResults, benchmarkResults);
 	}
 
 }
