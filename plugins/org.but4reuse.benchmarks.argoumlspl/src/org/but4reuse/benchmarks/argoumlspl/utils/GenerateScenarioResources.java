@@ -153,7 +153,7 @@ public class GenerateScenarioResources {
 		if (usePlatformURI) {
 			argoUMLSPLPlatformPath = "platform:/resource/" + benchmarkFolder.getName() + "/scenarios/";
 		} else {
-			argoUMLSPLPlatformPath = "file:/" + scenarioFolder.getParentFile().getAbsolutePath() + File.separatorChar;
+			argoUMLSPLPlatformPath = scenarioFolder.getParentFile().toURI().toString();
 		}
 
 		// Create String with the path of the scenario
