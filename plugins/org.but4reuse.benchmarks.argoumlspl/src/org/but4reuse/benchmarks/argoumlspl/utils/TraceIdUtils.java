@@ -17,6 +17,7 @@ public class TraceIdUtils {
 
 	/**
 	 * Get id of a package
+	 * 
 	 * @param packageDeclaration
 	 * @return id of the package
 	 */
@@ -29,6 +30,7 @@ public class TraceIdUtils {
 
 	/**
 	 * Get id of a type
+	 * 
 	 * @param typeDeclaration
 	 * @return id of the type
 	 */
@@ -40,9 +42,9 @@ public class TraceIdUtils {
 		// nested and inner classes
 		StringBuffer parentChain = new StringBuffer();
 		Object parent = typeDeclaration.getParent();
-		while(parent != null && parent instanceof TypeDeclaration) {
-			parentChain.insert(0, ((TypeDeclaration)parent).getName().getFullyQualifiedName() + ".");
-			parent = ((TypeDeclaration)parent).getParent();
+		while (parent != null && parent instanceof TypeDeclaration) {
+			parentChain.insert(0, ((TypeDeclaration) parent).getName().getFullyQualifiedName() + ".");
+			parent = ((TypeDeclaration) parent).getParent();
 		}
 		qname.append(parentChain);
 		qname.append(typeDeclaration.getName().getFullyQualifiedName());
@@ -51,6 +53,7 @@ public class TraceIdUtils {
 
 	/**
 	 * Get id of a method
+	 * 
 	 * @param methodDeclaration
 	 * @return id of the method
 	 */
@@ -77,7 +80,8 @@ public class TraceIdUtils {
 			}
 			qname.append(")");
 		} else {
-			System.err.println("IdUtils: Not handled");
+			System.err.println(
+					"TraceIdUtils: Method in " + methodDeclaration.getParent().getClass().getSimpleName() + " not handled");
 		}
 		return qname.toString();
 	}

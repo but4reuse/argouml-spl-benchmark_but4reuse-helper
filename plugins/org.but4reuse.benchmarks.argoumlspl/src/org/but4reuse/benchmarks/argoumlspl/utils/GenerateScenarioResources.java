@@ -3,6 +3,7 @@ package org.but4reuse.benchmarks.argoumlspl.utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -228,6 +229,47 @@ public class GenerateScenarioResources {
 		// Get path of the project
 		String argoUMLSPLAbsolutePath = scenariosFolder.getAbsolutePath();
 		// Get all the files inside the scenario Folder
+		for (File scenarioDirectory : getAllScenarios(scenariosFolder)) {
+
+			// Create String with the path of the scenario
+			String scenarioAbsolutePath = argoUMLSPLAbsolutePath + "\\" + scenarioDirectory.getName();
+
+			Object[] objects = createArtefactModelAndFeatureList(scenarioDirectory, true);
+			ArtefactModel artefactModel = (ArtefactModel) objects[0];
+			FeatureList featureList = (FeatureList) objects[1];
+
+			// // Create the file object for the featureList and
+			// artefactModel from absolute
+			// path
+			File but4ReuseDirectoryResourceAbsolute = new File(scenarioAbsolutePath + "/BUT4Reuse/");
+
+			// Create the file
+			FileUtils.deleteFile(but4ReuseDirectoryResourceAbsolute);
+			but4ReuseDirectoryResourceAbsolute.mkdir();
+
+			URI afmURI = new File(but4ReuseDirectoryResourceAbsolute, scenarioDirectory.getName() + ".artefactmodel")
+					.toURI();
+			URI flURI = new File(but4ReuseDirectoryResourceAbsolute, scenarioDirectory.getName() + ".featurelist")
+					.toURI();
+
+			try {
+				EMFUtils.saveEObject(afmURI, artefactModel);
+				EMFUtils.saveEObject(flURI, featureList);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Get all scenarios
+	 * 
+	 * @param scenariosFolder
+	 * @return list of scenarios
+	 */
+	public static List<File> getAllScenarios(File scenariosFolder) {
+		List<File> scenarios = new ArrayList<File>();
+		// Get all the files inside the scenario Folder
 		File[] scenarioFile = scenariosFolder.listFiles();
 
 		// Check if the array of Files is not null
@@ -235,36 +277,10 @@ public class GenerateScenarioResources {
 			for (File scenarioDirectory : scenarioFile) {
 				// Check if the scenarioDirectory is a folder
 				if (scenarioDirectory.isDirectory()) {
-
-					// Create String with the path of the scenario
-					String scenarioAbsolutePath = argoUMLSPLAbsolutePath + "\\" + scenarioDirectory.getName();
-
-					Object[] objects = createArtefactModelAndFeatureList(scenarioDirectory, true);
-					ArtefactModel artefactModel = (ArtefactModel) objects[0];
-					FeatureList featureList = (FeatureList) objects[1];
-
-					// // Create the file object for the featureList and
-					// artefactModel from absolute
-					// path
-					File but4ReuseDirectoryResourceAbsolute = new File(scenarioAbsolutePath + "/BUT4Reuse/");
-
-					// Create the file
-					FileUtils.deleteFile(but4ReuseDirectoryResourceAbsolute);
-					but4ReuseDirectoryResourceAbsolute.mkdir();
-
-					URI afmURI = new File(but4ReuseDirectoryResourceAbsolute,
-							scenarioDirectory.getName() + ".artefactmodel").toURI();
-					URI flURI = new File(but4ReuseDirectoryResourceAbsolute,
-							scenarioDirectory.getName() + ".featurelist").toURI();
-
-					try {
-						EMFUtils.saveEObject(afmURI, artefactModel);
-						EMFUtils.saveEObject(flURI, featureList);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					scenarios.add(scenarioDirectory);
 				}
 			}
 		}
+		return scenarios;
 	}
 }
